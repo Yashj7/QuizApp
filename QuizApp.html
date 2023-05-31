@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quiz App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: left;
+      background-color: #121212;
+      color: #fff;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1 {
+      color: #00ff8c;
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+    
+    p {
+      color: #ccc;
+      font-size: 18px;
+    }
+    
+    .question-box {
+      background-color: #333;
+      border: 2px solid #00ff8c;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .question {
+      color: #fff;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    
+    .options {
+      display: flex;
+      flex-direction: column;
+      align-items: left;
+    }
+    
+    .option {
+      margin-bottom: 10px;
+    }
+    
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #fff;
+      font-size: 24px;
+    }
+    
+    .button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Quiz App</h1>
+    <p>Test your knowledge with this futuristic quiz!</p>
+    <div id="quiz"></div>
+    <div id="results" class="result"></div>
+    <button id="submit" class="button">Submit</button>
+  </div>
+
+  <script>
+    const quizContainer = document.getElementById('quiz');
+    const resultsContainer = document.getElementById('results');
+    const submitButton = document.getElementById('submit');
+
+    const quizQuestions = [
+      {
+        question: "What is the capital of France?",
+        options: ["Paris", "Madrid", "Rome", "London"],
+        correctAnswer: "Paris"
+      },
+      {
+        question: "Which planet is closest to the sun?",
+        options: ["Mars", "Earth", "Venus", "Mercury"],
+        correctAnswer: "Mercury"
+      },
+      {
+        question: "Who painted the Mona Lisa?",
+        options: ["Leonardo da Vinci", "Pablo Picasso", "Vincent van Gogh", "Michelangelo"],
+        correctAnswer: "Leonardo da Vinci"
+      },
+      {
+        question: "What is the largest ocean in the world?",
+        options: ["Atlantic Ocean", "Arctic Ocean", "Indian Ocean", "Pacific Ocean"],
+        correctAnswer: "Pacific Ocean"
+      },
+      {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Mars", "Jupiter", "Venus", "Mercury"],
+        correctAnswer: "Mars"
+      }
+    ];
+
+    function buildQuiz() {
+      const output = [];
+
+      quizQuestions.forEach((question, questionIndex) => {
+        const options = [];
+
+        for (let i = 0; i < question.options.length; i++) {
+          options.push(
+            `<label>
+              <input type="radio" name="question${questionIndex}" value="${question.options[i]}">
+              ${question.options[i]}
+            </label>`
+          );
+        }
+
+        output.push(
+          `<div class="question-box">
+            <div class="question">${question.question}</div>
+            <div class="options">${options.join('')}</div>
+          </div>`
+        );
+      });
+
+      quizContainer.innerHTML = output.join('');
+    }
+
+    function showResults() {
+      const answerContainers = quizContainer.querySelectorAll('.options');
+      let numCorrect = 0;
+
+      quizQuestions.forEach((question, questionIndex) => {
+        const answerContainer = answerContainers[questionIndex];
+        const selector = `input[name=question${questionIndex}]:checked`;
+        const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+
+        if (userAnswer === question.correctAnswer) {
+          numCorrect++;
+          answerContainers[questionIndex].style.color = '#00ff8c';
+        } else {
+          answerContainers[questionIndex].style.color = '#ff4444';
+        }
+      });
+
+      resultsContainer.innerHTML = `You scored ${numCorrect} out of ${quizQuestions.length} correct!`;
+
+      const radioButtons = quizContainer.querySelectorAll('input[type="radio"]');
+      radioButtons.forEach(radioButton => {
+        radioButton.disabled = true;
+      });
+      submitButton.disabled = true;
+    }
+
+    buildQuiz();
+
+    submitButton.addEventListener('click', showResults);
+  </script>
+</body>
+</html>
